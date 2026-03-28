@@ -31,17 +31,17 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
           forceMaterialTransparency: true,
-          bottom: const TabBar(
+          bottom: TabBar(
             tabs: [
-              Tab(text: 'Pending'),
-              Tab(text: 'Completed'),
+              Obx(() => Tab(text: 'Pending (${controller.pendingTasks.length})')),
+              Obx(() => Tab(text: 'Completed (${controller.completedTasks.length})')),
             ],
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () => controller.fetchTasks(),
-            )
+            Obx(() => IconButton(
+              icon: Icon(controller.isDarkTheme.value ? Icons.light_mode : Icons.dark_mode),
+              onPressed: controller.toggleTheme,
+            ))
           ],
         ),
         body: Column(
@@ -144,12 +144,15 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Icon(Icons.location_on, size: 16, color: Colors.grey),
                 const SizedBox(width: 4),
-                Text(
-                  task.location,
-                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                Expanded(
+                  child: Text(
+                    task.location,
+                    style: const TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
                 ),
               ],
             ),

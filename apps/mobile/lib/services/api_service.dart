@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socket_io;
+import 'package:flutter/material.dart';
 
 class ApiService extends GetxService {
   late final Dio dio;
@@ -56,11 +57,18 @@ class ApiService extends GetxService {
 
         if (!Get.isSnackbarOpen) {
           Get.snackbar(
-            'Connection Error',
+            'Connection Issue',
             msg,
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Get.theme.colorScheme.error,
-            colorText: Get.theme.colorScheme.onError,
+            backgroundColor: Colors.red.shade800,
+            colorText: Colors.white,
+            margin: const EdgeInsets.all(16),
+            borderRadius: 16,
+            boxShadows: [
+              const BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 5))
+            ],
+            icon: const Icon(Icons.wifi_off, color: Colors.white),
+            shouldIconPulse: true,
             duration: const Duration(seconds: 4),
           );
         }

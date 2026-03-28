@@ -5,6 +5,11 @@
   --foreground: #171717;
 }
 
+.dark {
+  --background: #0f1117;
+  --foreground: #ededed;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +17,104 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* ============================================= */
+/* Dark Mode - Full Dashboard Theme Override     */
+/* ============================================= */
+
+/* Page background */
+.dark .min-h-screen.bg-\[\#f8f9fc\] {
+  background-color: #0f1117 !important;
+  color: #ededed !important;
+}
+
+/* Cards (TaskForm white bg, TaskList container) */
+.dark .bg-white.rounded-\[20px\] {
+  background-color: #1a1d27 !important;
+  border-color: #2a2d3a !important;
+}
+
+/* Task list blue-gray container */
+.dark .bg-\[\#eef2f7\] {
+  background-color: #1a1d27 !important;
+  border-color: #2a2d3a !important;
+}
+
+/* Individual task cards inside the list */
+.dark li.bg-white {
+  background-color: #22252f !important;
+  border-color: #2a2d3a !important;
+}
+
+/* Text colors */
+.dark .text-gray-900 { color: #ededed !important; }
+.dark .text-gray-800 { color: #d1d5db !important; }
+.dark .text-gray-700 { color: #c5c9d3 !important; }
+.dark .text-gray-600 { color: #9ca3af !important; }
+.dark .text-gray-500 { color: #8b8fa3 !important; }
+.dark .text-gray-400 { color: #6b7280 !important; }
+
+/* Input fields */
+.dark .bg-\[\#f0f4f8\] {
+  background-color: #2a2d3a !important;
+  color: #ededed !important;
+}
+.dark input.bg-\[\#f0f4f8\]::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Borders */
+.dark .border-gray-200 { border-color: #2a2d3a !important; }
+.dark .border-gray-100 { border-color: #22252f !important; }
+
+/* Stat cards */
+.dark .bg-\[\#f0f4f8\].rounded-\[16px\],
+.dark .bg-\[\#f8f9fc\].rounded-\[16px\],
+.dark .bg-\[\#f4fbf8\].rounded-\[16px\] {
+  background-color: #22252f !important;
+}
+.dark .bg-\[\#f0f4f8\].rounded-\[16px\]:hover,
+.dark .bg-\[\#f8f9fc\].rounded-\[16px\]:hover,
+.dark .bg-\[\#f4fbf8\].rounded-\[16px\]:hover {
+  background-color: #2a2d3a !important;
+}
+
+/* Blue primary button stays the same */
+
+/* Empty state card */
+.dark li.bg-white.rounded-\[20px\] {
+  background-color: #22252f !important;
+  border-color: #2a2d3a !important;
+}
+
+/* Footer */
+.dark footer {
+  color: #6b7280 !important;
+}
+.dark footer a:hover {
+  color: #9ca3af !important;
+}
+
+/* Tab active indicator */
+.dark .text-blue-600 { color: #60a5fa !important; }
+.dark .bg-blue-600 { background-color: #60a5fa !important; }
+
+/* Scrollbar */
+.dark ::-webkit-scrollbar {
+  width: 6px;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #1a1d27;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #2a2d3a;
+  border-radius: 3px;
+}
+
+
