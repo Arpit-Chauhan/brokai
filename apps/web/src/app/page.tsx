@@ -2,6 +2,7 @@ import TaskForm from '@/components/TaskForm';
 import TaskList from '@/components/TaskList';
 import OfflineIndicator from '@/components/OfflineIndicator';
 import SocketListener from '@/components/SocketListener';
+import Header from '@/components/Header';
 import { fetchTasks } from './actions';
 import { Suspense } from 'react';
 
@@ -33,35 +34,46 @@ async function TasksData() {
   return <TaskList tasks={tasks} />;
 }
 
-export default function Home() {
+export default async function Home() {
+  const tasks = await fetchTasks();
+
   return (
-    <div className="min-h-screen bg-gray-100 pb-10">
+    <div className="min-h-screen bg-[#f8f9fc] text-gray-900 font-sans flex flex-col">
       <OfflineIndicator />
       <SocketListener />
-      <div className="pt-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center">
-            <img src="/logo.jpg" alt="Brokai Logo" className="h-[72px] w-auto mx-auto mb-6 drop-shadow-sm rounded-2xl" />
-            <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
-              Dispatch Dashboard
-            </h1>
-            <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
-              Manage field tasks for engineers
-            </p>
+
+      {/* Top Navigation Bar with Search & Notifications */}
+      <Header tasks={tasks} />
+
+      {/* Main Content Body */}
+      <main className="flex-1 w-full max-w-[1500px] mx-auto p-6 lg:p-10">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-10">
+          
+          {/* Left Column: Form */}
+          <div className="xl:col-span-4 flex flex-col gap-6">
+            <TaskForm />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-white/50 p-6 rounded-xl border border-gray-200">
-            <div className="md:col-span-1">
-              <TaskForm />
-            </div>
-            <div className="md:col-span-2">
-              <Suspense fallback={<TaskListSkeleton />}>
-                <TasksData />
-              </Suspense>
-            </div>
+          {/* Right Column: List & Stats */}
+          <div className="xl:col-span-8 flex flex-col gap-8 min-w-0">
+            <Suspense fallback={<TaskListSkeleton />}>
+              <TasksData />
+            </Suspense>
           </div>
+
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="w-full max-w-[1500px] mx-auto px-6 lg:px-10 pb-8 pt-4 flex flex-col sm:flex-row justify-between items-center text-xs font-bold text-gray-400 gap-4">
+        <span>&copy; 2026 Brokai Labs. All rights reserved.</span>
+        <div className="flex items-center gap-6 uppercase tracking-wider">
+          <a href="https://www.brokailabs.com/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition">Privacy Policy</a>
+          <a href="https://www.brokailabs.com/terms" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition">Terms of Service</a>
+          <a href="https://www.brokailabs.com/faq" target="_blank" rel="noopener noreferrer" className="hover:text-gray-600 transition">Support</a>
+        </div>
+      </footer>
     </div>
   );
 }
+
