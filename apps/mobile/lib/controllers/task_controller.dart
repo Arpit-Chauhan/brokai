@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/task_model.dart';
+import '../models/notification_model.dart';
 import '../services/api_service.dart';
 
 class TaskController extends GetxController {
@@ -10,6 +11,9 @@ class TaskController extends GetxController {
   final RxBool isLoading = true.obs;
   final RxBool isActionLoading = false.obs;
   final RxBool isDarkTheme = false.obs;
+  final RxList<AppNotification> notifications = <AppNotification>[].obs;
+
+  int get unreadCount => notifications.where((n) => !n.read).length;
 
   List<Task> get pendingTasks {
     final list = tasks.where((t) => t.status != 'Completed').toList();
@@ -23,6 +27,27 @@ class TaskController extends GetxController {
     return list;
   }
 
+  void addNotification(String title, String message, String icon) {
+    notifications.insert(0, AppNotification(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+      message: message,
+      icon: icon,
+      timestamp: DateTime.now(),
+    ));
+  }
+
+  void markAllRead() {
+    for (var n in notifications) {
+      n.read = true;
+    }
+    notifications.refresh();
+  }
+
+  void clearNotifications() {
+    notifications.clear();
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -34,6 +59,7 @@ class TaskController extends GetxController {
 
     // Listen to real-time broadcasts for newly created tasks
     _apiService.socket.on('task_created', (data) {
+      final taskTitle = data['title'] ?? 'New task';
       Get.snackbar(
         '',
         '',
@@ -42,11 +68,11 @@ class TaskController extends GetxController {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 0.5)
         ),
         messageText: Text(
-          data['title'] ?? 'A new task was officially assigned to the field.', 
+          taskTitle, 
           style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.w500)
         ),
         snackPosition: SnackPosition.TOP,
-        backgroundColor: const Color(0xFF1E293B), // slate-800
+        backgroundColor: const Color(0xFF1E293B),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         borderRadius: 16,
@@ -60,12 +86,16 @@ class TaskController extends GetxController {
         shouldIconPulse: true,
         duration: const Duration(seconds: 5),
         isDismissible: true,
-        forwardAnimationCurve: Curves.easeOutBack, // snappy modern pop-in
+        forwardAnimationCurve: Curves.easeOutBack,
       );
+      addNotification('New Task Dispatched', taskTitle, '📋');
       _silentFetch();
     });
 
     _apiService.socket.on('task_completed', (data) {
+      final taskTitle = data['title'] ?? 'A task';
+      final actor = data['source'] == 'admin' ? 'Admin' : 'Field Engineer';
+      addNotification('Task Completed', '$actor completed: $taskTitle', '✅');
       _silentFetch();
     });
   }
@@ -130,3 +160,4 @@ class TaskController extends GetxController {
     Get.changeThemeMode(isDarkTheme.value ? ThemeMode.dark : ThemeMode.light);
   }
 }
+

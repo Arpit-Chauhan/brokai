@@ -34,6 +34,9 @@ io.on('connection', (socket) => {
 });
 
 // Routes
+app.get('/', (_req, res) => {
+    res.send('Welcome to Brokai Labs Assessment APIs');
+});
 app.use('/tasks', taskRoutes);
 
 // Global Error Handler
