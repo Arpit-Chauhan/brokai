@@ -11,4 +11,4 @@
 [build.environment]
   # Ensure Netlify installs the hoisted root dependencies properly
   NETLIFY_USE_YARN = "false"
-  NPM_FLAGS = "--workspace=apps/web --include-workspace-root"
+  NPM_FLAGS = "--workspace=web --include-workspace-root"
