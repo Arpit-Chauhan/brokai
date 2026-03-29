@@ -12,11 +12,12 @@ class HomeScreen extends StatelessWidget {
   final ApiService apiService = Get.find<ApiService>();
 
   String _formatDate(DateTime d) {
-    final day = d.day.toString().padLeft(2, '0');
-    final month = d.month.toString().padLeft(2, '0');
-    final year = d.year;
-    final hour = d.hour.toString().padLeft(2, '0');
-    final min = d.minute.toString().padLeft(2, '0');
+    final local = d.toLocal();
+    final day = local.day.toString().padLeft(2, '0');
+    final month = local.month.toString().padLeft(2, '0');
+    final year = local.year;
+    final hour = local.hour.toString().padLeft(2, '0');
+    final min = local.minute.toString().padLeft(2, '0');
     return '$day/$month/$year $hour:$min';
   }
 
@@ -210,19 +211,34 @@ class HomeScreen extends StatelessWidget {
       final tasks = isPendingTab ? controller.pendingTasks : controller.completedTasks;
 
       if (tasks.isEmpty) {
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+        return RefreshIndicator(
+          onRefresh: controller.fetchTasks,
+          color: const Color(0xFF2563EB),
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
             children: [
-              Icon(
-                isPendingTab ? Icons.assignment_outlined : Icons.task_alt,
-                size: 56,
-                color: textSecondary.withOpacity(0.4),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                isPendingTab ? 'No pending tasks to show.' : 'No completed tasks yet.',
-                style: TextStyle(color: textSecondary, fontSize: 15, fontWeight: FontWeight.w600),
+              SizedBox(height: MediaQuery.of(Get.context!).size.height * 0.25),
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      isPendingTab ? Icons.assignment_outlined : Icons.task_alt,
+                      size: 56,
+                      color: textSecondary.withOpacity(0.4),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      isPendingTab ? 'No pending tasks to show.' : 'No completed tasks yet.',
+                      style: TextStyle(color: textSecondary, fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Pull down to refresh',
+                      style: TextStyle(color: textSecondary.withOpacity(0.5), fontSize: 12, fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
